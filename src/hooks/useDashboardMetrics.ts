@@ -4,7 +4,7 @@ import type { AlertRow } from "@/components/AlertHistory";
 import { useAuth } from "@/hooks/useAuth";
 
 export const useDashboardMetrics = () => {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const [alerts, setAlerts] = useState<AlertRow[]>([]);
   const [failedDispatches, setFailedDispatches] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -18,10 +18,15 @@ export const useDashboardMetrics = () => {
     }
 
     setLoading(true);
-    const { data, error } = await supabase
+    const baseQuery = supabase
       .from("alerts")
       .select("*")
       .order("created_at", { ascending: false });
+
+    const { data, error } =
+      role === "admin"
+        ? await baseQuery
+        : await baseQuery.eq("user_id", user.id);
 
     if (!error && data) {
       const typed = data as AlertRow[];
@@ -40,7 +45,7 @@ export const useDashboardMetrics = () => {
     }
 
     setLoading(false);
-  }, [user]);
+  }, [user, role]);
 
   useEffect(() => {
     reload();

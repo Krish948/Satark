@@ -48,12 +48,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const fetchRole = async (uid: string) => {
-    const { data } = await supabase
+    const [{ data: roleData }, { data: profileData }] = await Promise.all([
+      supabase
       .from("user_roles")
       .select("role")
-      .eq("user_id", uid);
-    if (data?.some((r) => r.role === "admin")) setRole("admin");
-    else if (data && data.length > 0) setRole("user");
+      .eq("user_id", uid),
+      supabase
+        .from("profiles")
+        .select("is_active")
+        .eq("id", uid)
+        .maybeSingle(),
+    ]);
+
+    if (profileData && profileData.is_active === false) {
+      await supabase.auth.signOut();
+      setRole(null);
+      return;
+    }
+
+    if (roleData?.some((r) => r.role === "admin")) setRole("admin");
+    else if (roleData && roleData.length > 0) setRole("user");
     else setRole("user");
   };
 

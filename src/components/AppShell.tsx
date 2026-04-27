@@ -18,6 +18,7 @@ import {
   Workflow,
   Send,
   Globe,
+  Shield,
   LogOut,
   ShieldAlert,
   Loader2,
@@ -40,6 +41,7 @@ const links = [
   { to: "/systems/workflow", icon: Workflow, labelKey: "workflowSystem" as TranslationKey },
   { to: "/systems/dispatch", icon: Send, labelKey: "dispatchSystem" as TranslationKey },
   { to: "/systems/geo", icon: Globe, labelKey: "geoSystem" as TranslationKey },
+  { to: "/admin", icon: Shield, labelKey: "adminConsole" as TranslationKey, adminOnly: true },
 ];
 
 export const AppShell = ({ title, subtitle, children }: AppShellProps) => {
@@ -119,7 +121,7 @@ export const AppShell = ({ title, subtitle, children }: AppShellProps) => {
         </div>
 
         <nav className="p-4 space-y-1 overflow-y-auto">
-          {links.map((link) => {
+          {links.filter((link) => !("adminOnly" in link && link.adminOnly) || role === "admin").map((link) => {
             const Icon = link.icon;
             return (
               <NavLink
@@ -155,7 +157,7 @@ export const AppShell = ({ title, subtitle, children }: AppShellProps) => {
 
         <div className="lg:hidden border-b bg-card/70 backdrop-blur px-3 py-2 overflow-x-auto">
           <div className="flex items-center gap-2 min-w-max">
-            {links.map((link) => {
+            {links.filter((link) => !("adminOnly" in link && link.adminOnly) || role === "admin").map((link) => {
               const Icon = link.icon;
               return (
                 <NavLink

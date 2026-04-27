@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { LanguageProvider } from "@/hooks/useLanguage";
+import { AdminRoute } from "@/components/AdminRoute";
 import Index from "./pages/Index.tsx";
 
 const Auth = lazy(() => import("./pages/Auth.tsx"));
@@ -13,6 +14,7 @@ const CreateAlertPage = lazy(() => import("./pages/CreateAlertPage.tsx"));
 const AlertHistoryPage = lazy(() => import("./pages/AlertHistoryPage.tsx"));
 const LiveMapPage = lazy(() => import("./pages/LiveMapPage.tsx"));
 const SystemSectionPage = lazy(() => import("./pages/SystemSectionPage.tsx"));
+const AdminConsolePage = lazy(() => import("./pages/AdminConsolePage.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 const queryClient = new QueryClient();
@@ -33,6 +35,7 @@ const App = () => (
                 <Route path="/alerts/history" element={<AlertHistoryPage />} />
                 <Route path="/map/live" element={<LiveMapPage />} />
                 <Route path="/systems/:section" element={<SystemSectionPage />} />
+                <Route path="/admin" element={<AdminRoute><AdminConsolePage /></AdminRoute>} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -54,6 +54,31 @@ const insertDispatchLog = async (
 };
 
 export const dispatchAlert = async (alert: DispatchableAlert, attempts = 1) => {
+  const { data: control } = await supabase
+    .from("dispatch_controls")
+    .select("paused")
+    .eq("id", "global")
+    .maybeSingle();
+
+  if (control?.paused) {
+    await Promise.all(
+      CHANNELS.map(async (channel) => {
+        const text = alert[channel];
+        if (!text) return;
+
+        await insertDispatchLog(
+          alert.id,
+          channel,
+          "skipped",
+          attempts,
+          { alertId: alert.id, channel, message: text },
+          { reason: "dispatch_paused" },
+        );
+      }),
+    );
+    return;
+  }
+
   await Promise.all(
     CHANNELS.map(async (channel) => {
       const text = alert[channel];

@@ -2,6 +2,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import type { AlertRow } from "@/components/AlertHistory";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 
 export type SystemSection = "alerting" | "workflow" | "dispatch" | "geo";
@@ -136,9 +137,9 @@ export const SystemSectionPanel = ({ section, alerts, failedDispatches }: Props)
           <Card className="p-4 space-y-3">
             <p className="text-sm font-semibold">{t("lifecycleMix")}</p>
             <div className="space-y-2">
-              <div className="h-2 rounded bg-muted overflow-hidden"><div className="h-full bg-primary" style={{ width: `${publishRate}%` }} /></div>
-              <div className="h-2 rounded bg-muted overflow-hidden"><div className="h-full bg-amber-500" style={{ width: `${total ? Math.round((archived / total) * 100) : 0}%` }} /></div>
-              <div className="h-2 rounded bg-muted overflow-hidden"><div className="h-full bg-emerald-600" style={{ width: `${total ? Math.round((closed / total) * 100) : 0}%` }} /></div>
+              <Progress value={publishRate} className="h-2" />
+              <Progress value={total ? Math.round((archived / total) * 100) : 0} className="h-2" />
+              <Progress value={total ? Math.round((closed / total) * 100) : 0} className="h-2" />
             </div>
           </Card>
           <Card className="p-4 space-y-3">
